@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COŞKUNÖZ HOLDİNG</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        label {
+            font-size: 16px;
+            margin-top: 10px;
+            display: block;
+            color: #34495e;
+        }
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #2980b9;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #3498db;
+        }
+        .result, .history {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #ecf0f1;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" id="loginContainer">
+    <h1>COŞKUNÖZ HOLDİNG</h1>
+    <label for="calismaSure">Bugün ne kadar çalışacaksınız? (Dakika olarak)</label>
+    <input type="number" id="calismaSure" placeholder="420" />
+    <button onclick="girisYap()">Giriş Yap</button>
+</div>
+
+<div class="container" id="mainContainer" style="display:none;">
+    <h1>COŞKUNÖZ HOLDİNG</h1>
+    <p><strong>Kalan Çalışma Süresi:</strong> <span id="kalanSure">420</span> dakika</p>
+    
+    <label for="parca">Parça Adı:</label>
+    <input type="text" id="parca" placeholder="Parça ismini yazın" />
+
+    <label for="parcaAdedi">Parça Adedi:</label>
+    <input type="number" id="parcaAdedi" placeholder="Adet girin" />
+
+    <label for="parcaDakikasi">Parça Dakikası (Dakika olarak):</label>
+    <input type="number" id="parcaDakikasi" placeholder="Dakika girin" />
+
+    <button onclick="calismaKaydi()">Kaydı Yap</button>
+
+    <label for="durusSebebi">Duruş Sebebi:</label>
+    <input type="text" id="durusSebebi" placeholder="Duruş sebebini girin" />
+
+    <label for="durusDakikasi">Duruş Süresi (Dakika):</label>
+    <input type="number" id="durusDakikasi" placeholder="Dakika girin" />
+
+    <button onclick="durusKaydi()">Duruş Kaydı Yap</button>
+
+    <div class="result" id="sonuc"></div>
+    <div class="history" id="history"></div>
+
+    <button onclick="vardiyayiKapat()">Vardiyayı Kapat</button>
+
+    <div class="footer">
+        <p>&copy; 2025 COŞKUNÖZ HOLDİNG - Bütün Hakları Saklıdır</p>
+    </div>
+</div>
+
+<script>
+    var calismaSure = 420; // Başlangıçta kalan çalışma süresi 420
+    var toplamSure = 0;
+    var toplamDurus = 0;
+
+    function girisYap() {
+        var sure = document.getElementById("calismaSure").value;
+        if (sure && sure > 0) {
+            calismaSure = parseInt(sure);
+            document.getElementById("kalanSure").innerText = calismaSure;
+            document.getElementById("loginContainer").style.display = "none";
+            document.getElementById("mainContainer").style.display = "block";
+        } else {
+            alert("Lütfen geçerli bir çalışma süresi girin.");
+        }
+    }
+
+    function calismaKaydi() {
+        var parca = document.getElementById("parca").value;
+        var parcaAdedi = document.getElementById("parcaAdedi").value;
+        var parcaDakikasi = document.getElementById("parcaDakikasi").value;
+
+        if (parca && parcaAdedi && parcaDakikasi) {
+            var toplamDakika = parseInt(parcaAdedi) * parseFloat(parcaDakikasi);
+            calismaSure -= toplamDakika;
+            document.getElementById("kalanSure").innerText = calismaSure;
+
+            var yeniKayit = document.createElement("p");
+            yeniKayit.innerHTML = `Parça: ${parca}, Adet: ${parcaAdedi}, Süre: ${toplamDakika} dk`;
+            document.getElementById("history").appendChild(yeniKayit);
+        } else {
+            alert("Lütfen tüm alanları doldurun.");
+        }
+    }
+
+    function durusKaydi() {
+        var durusSebebi = document.getElementById("durusSebebi").value;
+        var durusDakikasi = parseInt(document.getElementById("durusDakikasi").value);
+
+        if (durusSebebi && durusDakikasi) {
+            calismaSure += durusDakikasi; // Durus süresi ekleniyor
+            document.getElementById("kalanSure").innerText = calismaSure;
+
+            var yeniDurus = document.createElement("p");
+            yeniDurus.innerHTML = `Duruş: ${durusSebebi}, Süre: ${durusDakikasi} dk`;
+            document.getElementById("history").appendChild(yeniDurus);
+        } else {
+            alert("Lütfen duruş bilgilerini girin.");
+        }
+    }
+
+    function vardiyayiKapat() {
+        var dosyaIcerik = `Toplam Çalışma Süresi: 420 dk\n\nKaydedilen Kayıtlar:\n`;
+
+        var historyDiv = document.getElementById("history");
+        for (var i = 0; i < historyDiv.children.length; i++) {
+            dosyaIcerik += historyDiv.children[i].innerText + '\n';
+        }
+
+        var blob = new Blob([dosyaIcerik], { type: 'text/plain' });
+        var a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "vardiya_kaydi.txt";
+        a.click();
+    }
+</script>
+
+</body>
+</html>
