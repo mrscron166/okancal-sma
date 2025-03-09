@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#2980b9"> <!-- Uygulama rengini belirleyin -->
+    <title>COŞKUNÖZ HOLDİNG</title>
+    <style>
+        /* Responsive tasarım */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            overflow-x: hidden;
+        }
+        .container {
+            max-width: 100%;
+            margin: 20px auto;
+            background-color: #ffffff;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        label {
+            font-size: 16px;
+            margin-top: 10px;
+            display: block;
+            color: #34495e;
+        }
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #2980b9;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #3498db;
+        }
+        .result, .history {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #ecf0f1;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+
+        /* Mobil uyumlu */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.5em;
+            }
+            .container {
+                padding: 10px;
+            }
+            button {
+                font-size: 14px;
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" id="mainContainer">
+    <h1>COŞKUNÖZ HOLDİNG</h1>
+
+    <label for="calismaSuresi">Bugün kaç dakika çalışacaksınız?</label>
+    <input type="number" id="calismaSuresi" placeholder="Çalışma süresini girin" />
+
+    <button onclick="calismaSuresiniGir()">Vardiya Süresini Gir</button>
+
+    <label for="parca">Parça Adı:</label>
+    <input type="text" id="parca" placeholder="Parça ismini yazın" />
+
+    <label for="parcaAdedi">Parça Adedi:</label>
+    <input type="number" id="parcaAdedi" placeholder="Adet girin" />
+
+    <label for="parcaDakikasi">Parça Dakikası (Dakika olarak):</label>
+    <input type="number" id="parcaDakikasi" placeholder="Dakika girin" />
+
+    <button onclick="calismaKaydi()">Kaydı Yap</button>
+
+    <label for="durusSebebi">Duruş Sebebi:</label>
+    <input type="text" id="durusSebebi" placeholder="Duruş sebebini girin" />
+
+    <label for="durusDakikasi">Duruş Süresi (Dakika):</label>
+    <input type="number" id="durusDakikasi" placeholder="Dakika girin" />
+
+    <button onclick="durusKaydi()">Duruş Kaydı Yap</button>
+
+    <div class="result" id="sonuc"></div>
+    <div class="history" id="history"></div>
+
+    <button onclick="vardiyayiKapat()">Vardiyayı Kapat</button>
+    <div class="footer">
+        <p>&copy; 2025 COŞKUNÖZ HOLDİNG - Bütün Hakları Saklıdır</p>
+    </div>
+</div>
+
+<script>
+    var toplamSure = 0;
+    var toplamDurus = 0;
+    var calismaSuresi = 0; // Başlangıçta 0, kullanıcı girince değer alacak
+
+    function calismaSuresiniGir() {
+        calismaSuresi = parseInt(document.getElementById("calismaSuresi").value);
+        if (calismaSuresi) {
+            alert(`Vardiya Süresi: ${calismaSuresi} dakika olarak kaydedildi.`);
+            document.getElementById("sonuc").innerText = `Kalan Çalışma Süresi: ${calismaSuresi} dk`; // İlk başta kalan süreyi göster
+        } else {
+            alert("Lütfen geçerli bir vardiya süresi girin.");
+        }
+    }
+
+    function calismaKaydi() {
+        var parca = document.getElementById("parca").value;
+        var parcaAdedi = document.getElementById("parcaAdedi").value;
+        var parcaDakikasi = document.getElementById("parcaDakikasi").value;
+        var historyDiv = document.getElementById("history");
+
+        if (calismaSuresi && parca && parcaAdedi && parcaDakikasi) {
+            var toplamDakika = parseInt(parcaAdedi) * parseFloat(parcaDakikasi);
+            if (toplamDakika <= calismaSuresi) {
+                calismaSuresi -= toplamDakika; // Çalışma süresinden çıkarılacak
+                var yeniKayit = document.createElement("p");
+                yeniKayit.innerHTML = `Parça: ${parca}, Adet: ${parcaAdedi}, Süre: ${toplamDakika} dk, Kalan Süre: ${calismaSuresi} dk`;
+                historyDiv.appendChild(yeniKayit);
+
+                document.getElementById("sonuc").innerText = `Kalan Çalışma Süresi: ${calismaSuresi} dk`; // Sonucu göster
+            } else {
+                alert("Çalışma sürenizden fazla süre girilemez.");
+            }
+        } else {
+            alert("Lütfen tüm alanları doldurun.");
+        }
+    }
+
+    function durusKaydi() {
+        var durusSebebi = document.getElementById("durusSebebi").value;
+        var durusDakikasi = parseInt(document.getElementById("durusDakikasi").value);
+        var historyDiv = document.getElementById("history");
+
+        if (durusSebebi && durusDakikasi) {
+            if (durusDakikasi <= calismaSuresi) {
+                // Duruş kaydından sonra sadece en alttaki kalan çalışma süresinden düşülmesini sağlıyoruz
+                calismaSuresi -= durusDakikasi;
+
+                var yeniDurus = document.createElement("p");
+                yeniDurus.innerHTML = `Duruş: ${durusSebebi}, Süre: ${durusDakikasi} dk, Kalan Çalışma Süresi: ${calismaSuresi} dk`;
+                historyDiv.appendChild(yeniDurus);
+
+                document.getElementById("sonuc").innerText = `Kalan Çalışma Süresi: ${calismaSuresi} dk`;
+                alert(`Toplam Duruş Süresi: ${toplamDurus} dk, Kalan Çalışma Süresi: ${calismaSuresi} dk`);
+            } else {
+                alert("Duruş süresi, kalan çalışma süresinden fazla olamaz.");
+            }
+        } else {
+            alert("Lütfen duruş bilgilerini girin.");
+        }
+    }
+
+    function vardiyayiKapat() {
+        var historyDiv = document.getElementById("history");
+        var veri = historyDiv.innerText;
+
+        // Türkçe karakter değişikliklerini yap
+        veri = veri.replace(/ş/g, 's');
+        veri = veri.replace(/Ş/g, 'S');
+        veri = veri.replace(/ı/g, 'i');
+        veri = veri.replace(/İ/g, 'I');
+        veri = veri.replace(/ü/g, 'u');
+        veri = veri.replace(/Ü/g, 'U');
+        veri = veri.replace(/ç/g, 'c');
+        veri = veri.replace(/Ç/g, 'C');
+        veri = veri.replace(/ğ/g, 'g');
+        veri = veri.replace(/Ğ/g, 'G');
+
+        // Veriyi .txt dosyasına yaz
+        var blob = new Blob([veri], { type: 'text/plain' });
+        var link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = "calisma_kaydi.txt"; // Dosya adı
+        link.click(); // Dosyayı indir
+    }
+</script>
+
+</body>
+</html>
