@@ -1,0 +1,692 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>WoodyArtDesign • Demo</title>
+  <style>
+    :root{
+      --primary:#3C2A20;   /* Derin Kahve */
+      --secondary:#5C4033; /* Mocha */
+      --accent:#C9A97F;    /* Altın Bej */
+      --bg:#F9F5F0;        /* Krem */
+      --fg:#2C211B;        /* Metin */
+      --card:#ffffff;
+      --stroke: rgba(60,42,32,.14);
+      --muted: rgba(44,33,27,.72);
+      --shadow: 0 18px 60px rgba(0,0,0,.16);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Helvetica Neue", "Noto Sans", "Liberation Sans", sans-serif;
+      background:var(--bg);
+      color:var(--fg);
+      line-height:1.55;
+    }
+    a{color:inherit; text-decoration:none}
+    .container{max-width:1120px; margin:0 auto; padding:0 16px}
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center;
+      padding:12px 18px; border-radius:999px; font-weight:650;
+      border:1px solid transparent; cursor:pointer;
+      transition: .18s ease;
+      user-select:none;
+    }
+    .btn-primary{background:var(--primary); color:#fff}
+    .btn-primary:hover{filter:brightness(1.05)}
+    .btn-accent{background:var(--accent); color:var(--primary)}
+    .btn-accent:hover{filter:brightness(1.03)}
+    .btn-ghost{background:transparent; border-color: rgba(255,255,255,.22); color:#fff}
+    .btn-ghost:hover{background:rgba(255,255,255,.08)}
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:7px 12px; border:1px solid var(--stroke);
+      border-radius:999px; background:rgba(255,255,255,.55);
+      color:var(--secondary); font-size:13px;
+    }
+    .muted{color:var(--muted)}
+    .card{
+      background:var(--card);
+      border:1px solid var(--stroke);
+      border-radius:18px;
+      overflow:hidden;
+      box-shadow: 0 1px 0 rgba(0,0,0,.02);
+    }
+    .grid{display:grid; gap:14px}
+    .grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .grid-4{grid-template-columns:repeat(4,minmax(0,1fr))}
+    @media (max-width: 960px){
+      .grid-3{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .grid-4{grid-template-columns:repeat(2,minmax(0,1fr))}
+    }
+    @media (max-width: 640px){
+      .grid-3,.grid-4{grid-template-columns:1fr}
+    }
+
+    /* Header */
+    header{
+      position:sticky; top:0; z-index:10;
+      background: rgba(249,245,240,.78);
+      backdrop-filter: blur(10px);
+      border-bottom:1px solid rgba(44,33,27,.08);
+    }
+    .header-inner{height:64px; display:flex; align-items:center; justify-content:space-between; gap:14px}
+    .brand{
+      display:flex; align-items:center; gap:10px;
+      font-weight:800; letter-spacing:-.02em;
+      color:var(--primary);
+    }
+    .mark{
+      width:34px; height:34px; border-radius:10px;
+      background: linear-gradient(135deg, var(--accent), #e8d4b5);
+      display:grid; place-items:center;
+      color:var(--primary); font-weight:900;
+      border:1px solid rgba(60,42,32,.12);
+    }
+    nav{display:flex; gap:16px; align-items:center}
+    nav a{
+      font-size:14px; color: rgba(44,33,27,.78);
+      padding:8px 10px; border-radius:10px;
+      transition:.15s ease;
+    }
+    nav a:hover{background: rgba(201,169,127,.20); color:var(--primary)}
+    .nav-cta{display:flex; gap:10px; align-items:center}
+    @media (max-width: 860px){
+      nav{display:none}
+    }
+
+    /* Hero */
+    .hero{
+      background: radial-gradient(1200px 600px at 30% 10%, rgba(201,169,127,.22), transparent 60%),
+                  linear-gradient(180deg, var(--primary), #2f1f18);
+      color:#fff;
+      padding: 54px 0 42px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+    }
+    .hero-inner{
+      display:grid; gap:18px;
+      grid-template-columns: 1.2fr .8fr;
+      align-items:center;
+    }
+    .hero h1{margin:0; font-size: clamp(34px, 4.4vw, 62px); line-height:1.05; letter-spacing:-.03em}
+    .hero p{margin:0; max-width:56ch; color: rgba(255,255,255,.86); font-size: 18px}
+    .hero-actions{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px}
+    .hero-right{
+      display:grid; gap:12px;
+      justify-items:end;
+    }
+    .hero-sample{
+      width:min(420px, 100%);
+      height:260px;
+      border-radius:22px;
+      border:1px solid rgba(255,255,255,.14);
+      background:
+        linear-gradient(120deg, rgba(201,169,127,.16), rgba(255,255,255,.06)),
+        radial-gradient(300px 200px at 70% 20%, rgba(255,255,255,.15), transparent 60%),
+        url('') no-repeat center/cover;
+      position:relative;
+      overflow:hidden;
+    }
+    .hero-sample::after{
+      content:"Görseller yakında";
+      position:absolute; inset:auto 14px 14px 14px;
+      padding:10px 12px;
+      border-radius:14px;
+      background: rgba(0,0,0,.22);
+      border:1px solid rgba(255,255,255,.16);
+      font-size:13px;
+      color: rgba(255,255,255,.86);
+    }
+    @media (max-width: 860px){
+      .hero-inner{grid-template-columns: 1fr}
+      .hero-right{justify-items:start}
+      .hero-sample{height:220px}
+    }
+
+    /* Sections */
+    section{padding: 44px 0}
+    .section-head{display:flex; align-items:flex-end; justify-content:space-between; gap:14px; margin-bottom:14px}
+    .section-head h2{margin:0; font-size:26px; color:var(--primary); letter-spacing:-.02em}
+    .section-head a{font-size:14px; color:var(--primary); text-decoration: underline; text-underline-offset:4px}
+
+    .imgph{
+      height:150px;
+      background:
+        linear-gradient(135deg, rgba(201,169,127,.30), rgba(60,42,32,.06)),
+        repeating-linear-gradient(90deg, rgba(60,42,32,.06) 0 12px, rgba(60,42,32,.03) 12px 24px);
+      border-bottom:1px solid var(--stroke);
+      display:grid; place-items:center;
+      color: rgba(44,33,27,.52);
+      font-size:13px;
+    }
+    .card-body{padding:14px}
+    .tag{font-size:12px; color:var(--secondary); font-weight:650}
+    .title{font-weight:800; margin-top:6px}
+    .desc{margin-top:8px; font-size:14px; color:var(--muted)}
+    .price{margin-top:10px; font-weight:800; color:var(--secondary)}
+
+    /* About block */
+    .about{
+      display:grid; gap:14px;
+      grid-template-columns: 1.2fr .8fr;
+      align-items:start;
+    }
+    @media (max-width: 860px){
+      .about{grid-template-columns: 1fr}
+    }
+    .about .card{padding:18px}
+    .values{display:grid; gap:12px}
+    .value{
+      padding:14px; border-radius:16px;
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.65);
+    }
+    .value b{color:var(--primary)}
+    footer{
+      margin-top: 30px;
+      border-top:1px solid rgba(44,33,27,.10);
+      padding: 28px 0 70px;
+      color: rgba(44,33,27,.72);
+      font-size: 14px;
+    }
+
+    /* Chat widget */
+    .chat-fab{
+      position:fixed; right:18px; bottom:18px; z-index:50;
+      width:52px; height:52px; border-radius:999px;
+      border:1px solid rgba(255,255,255,.16);
+      background:var(--primary); color:#fff;
+      box-shadow: var(--shadow);
+      display:grid; place-items:center;
+      cursor:pointer;
+      transition:.15s ease;
+    }
+    .chat-fab:hover{transform: translateY(-1px)}
+    .chat-panel{
+      position:fixed; right:18px; bottom:84px; z-index:50;
+      width: min(390px, calc(100vw - 36px));
+      border-radius:18px;
+      overflow:hidden;
+      border:1px solid rgba(44,33,27,.14);
+      background:#fff;
+      box-shadow: var(--shadow);
+      transform-origin: bottom right;
+      display:none;
+    }
+    .chat-panel.open{display:block; animation: pop .14s ease-out}
+    @keyframes pop{
+      from{opacity:0; transform: translateY(10px) scale(.98)}
+      to{opacity:1; transform: translateY(0) scale(1)}
+    }
+    .chat-head{
+      background: linear-gradient(180deg, var(--primary), #2f1f18);
+      color:#fff;
+      padding:12px 12px;
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+    }
+    .chat-id{display:flex; align-items:center; gap:10px}
+    .chat-avatar{
+      width:34px; height:34px; border-radius:12px;
+      background: linear-gradient(135deg, var(--accent), #eddcc2);
+      border:1px solid rgba(255,255,255,.22);
+      display:grid; place-items:center;
+      color:var(--primary); font-weight:900;
+    }
+    .chat-title{font-weight:850; line-height:1.1}
+    .chat-sub{font-size:12px; opacity:.82}
+    .chat-close{
+      width:34px; height:34px; border-radius:12px;
+      border:1px solid rgba(255,255,255,.22);
+      background: rgba(255,255,255,.06);
+      color:#fff;
+      cursor:pointer;
+    }
+    .chat-body{
+      height: 340px;
+      background: var(--bg);
+      padding: 12px;
+      overflow:auto;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .msg{
+      max-width: 86%;
+      padding: 10px 11px;
+      border-radius: 14px;
+      border:1px solid rgba(44,33,27,.12);
+      background:#fff;
+      font-size: 14px;
+      white-space:pre-wrap;
+    }
+    .msg.assistant{border-top-left-radius:6px}
+    .msg.user{
+      margin-left:auto;
+      border-top-right-radius:6px;
+      background: rgba(255,255,255,.85);
+    }
+    .chat-foot{
+      padding: 10px;
+      border-top:1px solid rgba(44,33,27,.10);
+      display:flex; gap:8px;
+      background:#fff;
+    }
+    .chat-input{
+      flex:1;
+      padding: 11px 12px;
+      border-radius: 14px;
+      border:1px solid rgba(44,33,27,.18);
+      outline:none;
+      font-size:14px;
+    }
+    .chat-input:focus{border-color: rgba(60,42,32,.55)}
+    .chat-send{
+      width:44px; border-radius:14px;
+      border:1px solid rgba(44,33,27,.12);
+      background: var(--primary);
+      color:#fff;
+      cursor:pointer;
+    }
+    .hint{
+      font-size:12px;
+      color: rgba(44,33,27,.60);
+      padding: 10px 12px 0;
+    }
+
+    /* Smooth anchors */
+    html{scroll-behavior:smooth}
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="container header-inner">
+      <a class="brand" href="#top" aria-label="WoodyArtDesign">
+        <span class="mark">W</span>
+        <span>WoodyArtDesign</span>
+      </a>
+
+      <nav>
+        <a href="#projeler">Projeler</a>
+        <a href="#magaza">Mağaza</a>
+        <a href="#referanslar">Referanslar</a>
+        <a href="#hakkimizda">Hakkımızda</a>
+        <a href="#iletisim">İletişim</a>
+      </nav>
+
+      <div class="nav-cta">
+        <a class="btn btn-accent" href="#magaza">Ürünlere Bak</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="top">
+    <div class="hero">
+      <div class="container hero-inner">
+        <div>
+          <span class="pill">2024’te kuruldu • İç mimari • Özel mobilya • Aksesuar</span>
+          <h1 style="margin-top:12px">Yaşam alanlarınıza sıcaklık, kalite ve tasarım katıyoruz.</h1>
+          <p style="margin-top:12px">
+            WoodyArtDesign; iç mekan tasarımı, özel mobilya üretimi ve online aksesuar ürünleriyle
+            modern minimal çizgide, premium bir deneyim sunar.
+          </p>
+          <div class="hero-actions">
+            <a class="btn btn-accent" href="#magaza">Koleksiyonu Keşfet</a>
+            <a class="btn btn-ghost" href="#projeler">Projelerimizi Gör</a>
+          </div>
+          <div class="hint">Canlı destek: Sağ alttaki “Woody AI” ile soru sorabilirsiniz.</div>
+        </div>
+
+        <div class="hero-right">
+          <div class="hero-sample" aria-label="Görsel alanı"></div>
+        </div>
+      </div>
+    </div>
+
+    <section id="projeler">
+      <div class="container">
+        <div class="section-head">
+          <h2>Öne Çıkan Projeler</h2>
+          <a href="#hakkimizda">Hikayemiz</a>
+        </div>
+
+        <div class="grid grid-3" id="projectGrid"></div>
+      </div>
+    </section>
+
+    <section id="magaza">
+      <div class="container">
+        <div class="section-head">
+          <h2>Mağaza (Demo)</h2>
+          <a href="#iletisim">Sipariş için iletişim</a>
+        </div>
+
+        <div class="grid grid-3" id="productGrid"></div>
+        <p class="muted" style="margin-top:12px">
+          Not: Bu demo sayfa. Gerçek e-ticaret için (sepete ekle, ödeme) Shopify/WooCommerce gibi altyapı eklenir.
+        </p>
+      </div>
+    </section>
+
+    <section id="referanslar">
+      <div class="container">
+        <div class="section-head">
+          <h2>Referanslar / Galeri</h2>
+          <a href="#iletisim">Randevu / keşif</a>
+        </div>
+
+        <div class="grid grid-4" id="galleryGrid"></div>
+      </div>
+    </section>
+
+    <section id="hakkimizda">
+      <div class="container">
+        <div class="section-head">
+          <h2>Hakkımızda</h2>
+          <a href="#projeler">Projelere dön</a>
+        </div>
+
+        <div class="about">
+          <div class="card">
+            <p class="muted" style="margin:0">
+              WoodyArtDesign, 2024 yılında tutkulu bir tasarım ve ahşap sevgisiyle kuruldu.
+              İç mekan tasarımından özel mobilya üretimine, kaliteli aksesuarlardan yaşam alanlarınıza değer katan
+              detaylara kadar uzanan bir yolculuğun başlangıcıyız.
+            </p>
+            <p class="muted" style="margin:12px 0 0">
+              Her projemizde kalite, estetik ve fonksiyonelliği bir arada sunmayı hedefliyoruz.
+              Atölyemizde özenle seçilmiş malzemelerle, modern teknolojiyi geleneksel ahşap işçiliğiyle buluşturuyoruz.
+            </p>
+            <p class="muted" style="margin:12px 0 0">
+              Küçük bir ekip olarak büyük hayallere inanıyoruz. Her bir parça, her bir proje bizim için sadece bir iş değil,
+              yeni bir hikaye yaratma fırsatıdır.
+            </p>
+          </div>
+
+          <div class="values">
+            <div class="value">
+              <b>Kalite</b><div class="muted">Malzeme seçimi + temiz işçilik + uzun ömür.</div>
+            </div>
+            <div class="value">
+              <b>Estetik</b><div class="muted">Sıcak kahve tonları, modern minimal çizgi.</div>
+            </div>
+            <div class="value">
+              <b>İletişim</b><div class="muted">Woody AI ile hızlı yanıt, isterseniz temsilciye bağlantı.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="iletisim">
+      <div class="container">
+        <div class="section-head">
+          <h2>İletişim</h2>
+          <a href="#top">Yukarı</a>
+        </div>
+
+        <div class="grid grid-3">
+          <div class="card">
+            <div class="card-body">
+              <div class="title">Hızlı İletişim</div>
+              <div class="desc">
+                WhatsApp üzerinden sipariş / teklif için yazabilirsiniz.
+              </div>
+              <div style="margin-top:12px">
+                <a class="btn btn-primary" id="whatsBtn" href="#" target="_blank" rel="noopener">WhatsApp’a Yaz</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-body">
+              <div class="title">Instagram</div>
+              <div class="desc">Portfolyo ve yeni ürünler için: <span class="muted">@WoodyArtDesign</span></div>
+              <div style="margin-top:12px">
+                <a class="btn btn-accent" href="#" onclick="alert('Demo: Buraya Instagram linki koyacağız.')">Instagram’a Git</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-body">
+              <div class="title">Not</div>
+              <div class="desc">
+                Fotoğraflar hazır olduğunda kartların görsel alanlarına ekleyip siteyi daha premium hale getiririz.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div class="container" style="display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:space-between">
+        <div><b style="color:var(--primary)">WoodyArtDesign</b> <span class="muted">© 2026</span></div>
+        <div class="muted">İç mimari • Özel mobilya • Online aksesuar</div>
+      </div>
+    </footer>
+  </main>
+
+  <!-- Chat -->
+  <button class="chat-fab" id="chatFab" aria-label="Woody AI canlı destek">
+    <!-- simple icon -->
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+      <path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5c-1.3 0-2.54-.29-3.65-.8L3 20l.86-5.85A8.46 8.46 0 0 1 3.5 11.5 8.5 8.5 0 1 1 21 11.5Z" stroke="white" stroke-width="1.8" stroke-linejoin="round"/>
+      <path d="M8 12h8" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+      <path d="M8 8.5h5" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </button>
+
+  <div class="chat-panel" id="chatPanel" role="dialog" aria-label="Woody AI sohbet">
+    <div class="chat-head">
+      <div class="chat-id">
+        <div class="chat-avatar">W</div>
+        <div>
+          <div class="chat-title">Woody AI</div>
+          <div class="chat-sub">Yapay zeka canlı destek (demo)</div>
+        </div>
+      </div>
+      <button class="chat-close" id="chatClose" aria-label="Kapat">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+          <path d="M6 6l12 12M18 6L6 18" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="chat-body" id="chatBody"></div>
+
+    <div class="chat-foot">
+      <input class="chat-input" id="chatInput" placeholder="Sorunuzu yazın... (örn: fiyat, ürün, proje)" />
+      <button class="chat-send" id="chatSend" aria-label="Gönder">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+          <path d="M21 3L3.7 10.3c-.9.38-.85 1.7.08 2l6.4 2.1 2.1 6.4c.3.93 1.62.98 2 .08L21 3Z" stroke="white" stroke-width="1.8" stroke-linejoin="round"/>
+          <path d="M10.2 14.8L21 3" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+<script>
+  // ====== Demo data ======
+  const projects = [
+    { title:"Özel TV Ünitesi", category:"Mobilya", desc:"Modern çizgiler, sıcak ahşap tonları. Görseller yakında eklenecek." },
+    { title:"Mutfak Tasarım Uygulaması", category:"İç Mekan", desc:"Fonksiyonel depolama ve premium görünüm. Görseller yakında eklenecek." },
+    { title:"Dekoratif Raf Serisi", category:"Dekorasyon", desc:"Minimal raf seti, farklı ölçü seçenekleri. Görseller yakında eklenecek." },
+  ];
+
+  const products = [
+    { title:"Ahşap Mumluk", price:"₺ —", desc:"Ürün görselleri ve fiyatlar yakında." },
+    { title:"Dekoratif Duvar Rafı", price:"₺ —", desc:"Ürün görselleri ve fiyatlar yakında." },
+    { title:"Minimal Sehpa", price:"₺ —", desc:"Ürün görselleri ve fiyatlar yakında." },
+  ];
+
+  const gallery = [
+    { title:"Atölye - Üretim Alanı (yakında görsel)" },
+    { title:"Detay İşçilik (yakında görsel)" },
+    { title:"Paketleme / Sevkiyat (yakında görsel)" },
+    { title:"Numune Köşesi (yakında görsel)" },
+  ];
+
+  function cardHTML(item, type){
+    if(type === "project"){
+      return `
+        <article class="card">
+          <div class="imgph">Görsel yakında</div>
+          <div class="card-body">
+            <div class="tag">${item.category}</div>
+            <div class="title">${item.title}</div>
+            <div class="desc">${item.desc}</div>
+          </div>
+        </article>`;
+    }
+    if(type === "product"){
+      return `
+        <article class="card">
+          <div class="imgph">Ürün görseli yakında</div>
+          <div class="card-body">
+            <div class="title">${item.title}</div>
+            <div class="price">${item.price}</div>
+            <div class="desc">${item.desc}</div>
+          </div>
+        </article>`;
+    }
+    if(type === "gallery"){
+      return `
+        <article class="card">
+          <div class="imgph" style="height:130px">Görsel yakında</div>
+          <div class="card-body">
+            <div class="title" style="font-size:14px">${item.title}</div>
+          </div>
+        </article>`;
+    }
+  }
+
+  document.getElementById("projectGrid").innerHTML = projects.map(p => cardHTML(p, "project")).join("");
+  document.getElementById("productGrid").innerHTML = products.map(p => cardHTML(p, "product")).join("");
+  document.getElementById("galleryGrid").innerHTML = gallery.map(g => cardHTML(g, "gallery")).join("");
+
+  // ====== WhatsApp settings (DEĞİŞTİR) ======
+  const WHATSAPP_NUMBER = "90XXXXXXXXXX"; // örn: 90555xxxxxxx
+  const whatsappLink = (text) => `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
+  const whatsBtn = document.getElementById("whatsBtn");
+  whatsBtn.href = whatsappLink("Merhaba, WoodyArtDesign için bilgi/sipariş almak istiyorum.");
+
+  // ====== Chat (Demo AI) ======
+  const chatFab = document.getElementById("chatFab");
+  const chatPanel = document.getElementById("chatPanel");
+  const chatClose = document.getElementById("chatClose");
+  const chatBody = document.getElementById("chatBody");
+  const chatInput = document.getElementById("chatInput");
+  const chatSend = document.getElementById("chatSend");
+
+  const triggers = [
+    "müşteri temsilcinize bağla",
+    "musteri temsilcinize bagla",
+    "insanla konuşmak istiyorum",
+    "insanla konusmak istiyorum",
+    "yetkiliyle görüşmek istiyorum",
+    "yetkiliyle gorusmek istiyorum",
+    "sipariş için temsilci istiyorum",
+    "siparis icin temsilci istiyorum",
+    "canlı destek",
+    "canli destek",
+    "gerçek kişiyle görüşmek istiyorum",
+    "gercek kisiyle gorusmek istiyorum",
+  ];
+
+  function addMsg(role, text){
+    const el = document.createElement("div");
+    el.className = `msg ${role}`;
+    el.textContent = text;
+    chatBody.appendChild(el);
+    chatBody.scrollTop = chatBody.scrollHeight;
+  }
+
+  function openChat(){
+    chatPanel.classList.add("open");
+    chatInput.focus();
+  }
+  function closeChat(){
+    chatPanel.classList.remove("open");
+  }
+
+  chatFab.addEventListener("click", () => {
+    chatPanel.classList.toggle("open");
+    if(chatPanel.classList.contains("open")) chatInput.focus();
+  });
+  chatClose.addEventListener("click", closeChat);
+
+  // initial greeting
+  addMsg("assistant", "Merhaba! Ben Woody. WoodyArtDesign asistanıyım.\nÜrünler, projeler, teslimat ve genel bilgi konularında yardımcı olabilirim.\nİsterseniz “müşteri temsilcinize bağla” yazarak WhatsApp’a geçebilirsiniz.");
+
+  function demoAIAnswer(text){
+    const t = text.toLowerCase();
+
+    if(triggers.some(x => t.includes(x))){
+      return { kind:"handoff" };
+    }
+
+    if(t.includes("merhaba") || t.includes("selam")){
+      return { kind:"text", text: "Merhaba! Size nasıl yardımcı olabilirim? Ürün, proje ya da özel üretim konusunda bilgi verebilirim." };
+    }
+
+    if(t.includes("hakk") || t.includes("kurul") || t.includes("2024")){
+      return { kind:"text", text: "WoodyArtDesign 2024 yılında kuruldu. İç mimari, özel mobilya üretimi ve online aksesuar satışına odaklanıyoruz." };
+    }
+
+    if(t.includes("ürün") || t.includes("magaza") || t.includes("satın") || t.includes("satin")){
+      return { kind:"text", text: "Mağaza bölümünde aksesuar ve küçük mobilya ürünleri yer alacak. Şu an demo; ürün görselleri ve fiyatlar eklendikçe liste güncellenecek." };
+    }
+
+    if(t.includes("fiyat") || t.includes("ücret") || t.includes("ucret") || t.includes("kaç tl") || t.includes("ne kadar")){
+      return { kind:"text", text: "Net fiyat; ölçü, malzeme ve tasarıma göre değişir. İsterseniz hangi ürünü/ölçüyü düşündüğünüzü yazın, size yaklaşık bir aralık söyleyebilirim." };
+    }
+
+    if(t.includes("teslimat") || t.includes("kargo") || t.includes("süre") || t.includes("sure")){
+      return { kind:"text", text: "Teslimat süresi ürün ve yoğunluğa göre değişir. Stok/aksesuar ürünleri daha hızlı, özel üretimler ölçü ve tasarıma göre planlanır. İsterseniz bulunduğunuz şehir ve ürün tipini yazın." };
+    }
+
+    if(t.includes("proje") || t.includes("portfol") || t.includes("referans")){
+      return { kind:"text", text: "Projeler ve referanslar kısmını düzenli güncelliyoruz. İsterseniz sizin alanınıza uygun (mutfak, TV ünitesi, dolap, raf vb.) örnekler önerebilirim." };
+    }
+
+    if(t.includes("bakım") || t.includes("temiz") || t.includes("koru")){
+      return { kind:"text", text: "Ahşap bakımında: nemli yumuşak bez + kimyasal olmayan temizleyici, direkt güneş ve yoğun sudan kaçınma önerilir. Ürün yüzey tipini (lake/yağ/vernik) yazarsanız daha net öneririm." };
+    }
+
+    return { kind:"text", text: "Anladım. Bunu daha iyi yanıtlamak için küçük bir detay alabilir miyim? (Ürün/ölçü/kullanım alanı gibi)" };
+  }
+
+  function send(){
+    const text = chatInput.value.trim();
+    if(!text) return;
+    addMsg("user", text);
+    chatInput.value = "";
+
+    const res = demoAIAnswer(text);
+
+    if(res.kind === "handoff"){
+      addMsg("assistant", "Elbette. Müşteri temsilcimize bağlanmanız için WhatsApp’a yönlendiriyorum.");
+      const url = whatsappLink("Merhaba, müşteri temsilcisi ile görüşmek istiyorum. (WoodyArtDesign)");
+      window.open(url, "_blank", "noopener,noreferrer");
+      return;
+    }
+
+    // small "typing" feel
+    setTimeout(() => addMsg("assistant", res.text), 280);
+  }
+
+  chatSend.addEventListener("click", send);
+  chatInput.addEventListener("keydown", (e) => {
+    if(e.key === "Enter") send();
+    if(e.key === "Escape") closeChat();
+  });
+
+  // Auto open chat after a bit (optional)
+  // setTimeout(openChat, 1200);
+</script>
+</body>
+</html>
