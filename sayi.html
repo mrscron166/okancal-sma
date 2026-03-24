@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COŞKUNÖZ HOLDİNG - Vardiya Takip</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #1a2a3a 0%, #2c3e50 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 850px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+        }
+        .logo-area {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .logo-area h1 {
+            color: #1a5276;
+            font-size: 28px;
+            margin: 0;
+            letter-spacing: 2px;
+        }
+        .logo-area .subtitle {
+            color: #7f8c8d;
+            font-size: 13px;
+            margin-top: 4px;
+        }
+        .section-title {
+            background: #2c3e50;
+            color: #fff;
+            padding: 10px 15px;
+            border-radius: 6px;
+            font-size: 15px;
+            margin: 20px 0 12px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        label {
+            font-size: 14px;
+            margin-top: 8px;
+            display: block;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+        input[type="text"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 10px 12px;
+            margin: 4px 0 12px 0;
+            font-size: 15px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            transition: border-color 0.3s;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 8px rgba(52, 152, 219, 0.2);
+        }
+        .btn {
+            width: 100%;
+            padding: 12px;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+        .btn-primary { background: #2980b9; }
+        .btn-primary:hover { background: #3498db; }
+        .btn-warning { background: #d35400; }
+        .btn-warning:hover { background: #e67e22; }
+        .btn-success { background: #27ae60; }
+        .btn-success:hover { background: #2ecc71; }
+        .btn-danger { background: #c0392b; }
+        .btn-danger:hover { background: #e74c3c; }
+        .btn-small {
+            width: auto;
+            padding: 5px 12px;
+            font-size: 12px;
+            margin: 0;
+            display: inline-flex;
+        }
+
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        .status-card {
+            flex: 1;
+            min-width: 150px;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            color: #fff;
+            font-size: 13px;
+        }
+        .status-card .value {
+            font-size: 26px;
+            font-weight: bold;
+            display: block;
+            margin-top: 4px;
+        }
+        .sc-remaining { background: linear-gradient(135deg, #2980b9, #3498db); }
+        .sc-production { background: linear-gradient(135deg, #27ae60, #2ecc71); }
+        .sc-downtime { background: linear-gradient(135deg, #d35400, #e67e22); }
+
+        .history-area {
+            margin-top: 20px;
+            max-height: 350px;
+            overflow-y: auto;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 10px;
+            background: #fafafa;
+        }
+        .history-item {
+            padding: 8px 12px;
+            margin-bottom: 6px;
+            border-radius: 6px;
+            font-size: 13px;
+            line-height: 1.5;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .hi-production { background: #d5f4e6; border-left: 4px solid #27ae60; }
+        .hi-downtime { background: #fde8d0; border-left: 4px solid #e67e22; }
+
+        .autocomplete-wrapper {
+            position: relative;
+        }
+        .autocomplete-list {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: #fff;
+            border: 2px solid #3498db;
+            border-top: none;
+            border-radius: 0 0 6px 6px;
+            max-height: 180px;
+            overflow-y: auto;
+            z-index: 999;
+            display: none;
+        }
+        .autocomplete-item {
+            padding: 10px 12px;
+            cursor: pointer;
+            font-size: 14px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+        }
+        .autocomplete-item:hover {
+            background-color: #ebf5fb;
+        }
+        .autocomplete-item .parca-dakika {
+            color: #7f8c8d;
+            font-size: 12px;
+        }
+
+        .parca-yonetim {
+            margin-top: 10px;
+            padding: 10px;
+            background: #f0f3f5;
+            border-radius: 6px;
+            font-size: 13px;
+        }
+        .parca-tag {
+            display: inline-block;
+            background: #2980b9;
+            color: #fff;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin: 3px;
+        }
+        .parca-tag .sil-btn {
+            cursor: pointer;
+            margin-left: 6px;
+            font-weight: bold;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 12px;
+            color: #95a5a6;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+        }
+
+        .row {
+            display: flex;
+            gap: 12px;
+        }
+        .row > div {
+            flex: 1;
+        }
+
+        .empty-msg {
+            text-align: center;
+            color: #bbb;
+            padding: 20px;
+            font-style: italic;
+        }
+
+        @media (max-width: 600px) {
+            .container { margin: 10px; padding: 15px; }
+            .status-card { min-width: 100%; }
+            .row { flex-direction: column; gap: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ==================== GİRİŞ EKRANI ==================== -->
+<div class="container" id="loginContainer">
+    <div class="logo-area">
+        <h1>COŞKUNÖZ HOLDİNG</h1>
+        <p class="subtitle">Vardiya Takip Sistemi</p>
+    </div>
+
+    <div class="section-title">⏱️ Vardiya Ayarları</div>
+
+    <label for="calismaSure">Bugünkü Vardiya Süresi (Dakika)</label>
+    <input type="number" id="calismaSure" placeholder="Örn: 420 (7 saat)" min="1" />
+
+    <label for="operatorAdi">Operatör Adı</label>
+    <input type="text" id="operatorAdi" placeholder="Adınızı ve soyadınızı girin" />
+
+    <button class="btn btn-primary" onclick="girisYap()">▶ Vardiyaya Başla</button>
+
+    <!-- Kayıtlı Parça Listesi Yönetimi -->
+    <div class="section-title">📦 Kayıtlı Parça Listesi</div>
+    <div class="parca-yonetim" id="parcaYonetimGiris">
+        <p style="margin:0 0 8px 0; font-weight:600;">Yeni Parça Tanımla:</p>
+        <div class="row">
+            <div>
+                <input type="text" id="yeniParcaAdi" placeholder="Parça adı" style="margin-bottom:4px;" />
+            </div>
+            <div>
+                <input type="number" id="yeniParcaDakikasi" placeholder="Parça dk (birim)" step="0.01" min="0.01" style="margin-bottom:4px;" />
+            </div>
+        </div>
+        <button class="btn btn-success btn-small" onclick="yeniParcaEkle()" style="margin-bottom:10px;">+ Parça Ekle</button>
+        <div id="parcaListesiGiris"></div>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2025 COŞKUNÖZ HOLDİNG - Tüm Hakları Saklıdır</p>
+    </div>
+</div>
+
+<!-- ==================== ANA ÇALIŞMA EKRANI ==================== -->
+<div class="container" id="mainContainer" style="display:none;">
+    <div class="logo-area">
+        <h1>COŞKUNÖZ HOLDİNG</h1>
+        <p class="subtitle">Vardiya Takip Sistemi — <span id="operatorGoster"></span></p>
+    </div>
+
+    <!-- DURUM KARTLARI -->
+    <div class="status-bar">
+        <div class="status-card sc-remaining">
+            Kalan Süre (dk)
+            <span class="value" id="kalanSure">0</span>
+        </div>
+        <div class="status-card sc-production">
+            Üretim Süresi (dk)
+            <span class="value" id="toplamUretimGoster">0</span>
+        </div>
+        <div class="status-card sc-downtime">
+            Duruş Süresi (dk)
+            <span class="value" id="toplamDurusGoster">0</span>
+        </div>
+    </div>
+
+    <!-- ÜRETİM KAYDI -->
+    <div class="section-title">🔧 Üretim Kaydı</div>
+
+    <label for="parcaInput">Parça Adı (yazmaya başlayın):</label>
+    <div class="autocomplete-wrapper">
+        <input type="text" id="parcaInput" placeholder="Parça adını yazın..." autocomplete="off" oninput="autocompleteAra()" onfocus="autocompleteAra()" />
+        <div class="autocomplete-list" id="autocompleteList"></div>
+    </div>
+
+    <div class="row">
+        <div>
+            <label for="parcaAdedi">Parça Adedi:</label>
+            <input type="number" id="parcaAdedi" placeholder="Adet" min="1" />
+        </div>
+        <div>
+            <label for="parcaDakikasi">Birim Parça Dakikası:</label>
+            <input type="number" id="parcaDakikasi" placeholder="dk" step="0.01" min="0.01" />
+        </div>
+    </div>
+
+    <button class="btn btn-primary" onclick="calismaKaydi()">✅ Üretim Kaydı Yap</button>
+
+    <!-- DURUŞ KAYDI -->
+    <div class="section-title">⏸️ Duruş Kaydı</div>
+
+    <label for="durusSebebi">Duruş Sebebi:</label>
+    <select id="durusSebebi">
+        <option value="">-- Seçiniz --</option>
+        <option value="Makine Arızası">Makine Arızası</option>
+        <option value="Kalıp Arızası">Kalıp Arızası</option>
+        <option value="Malzeme Bekleme">Malzeme Bekleme</option>
+        <option value="Kalıp Değişimi">Kalıp Değişimi</option>
+        <option value="Planlı Bakım">Planlı Bakım</option>
+        <option value="Elektrik Kesintisi">Elektrik Kesintisi</option>
+        <option value="Personel Eksikliği">Personel Eksikliği</option>
+        <option value="Kalite Sorunu">Kalite Sorunu</option>
+        <option value="Diğer">Diğer</option>
+    </select>
+
+    <div class="row">
+        <div>
+            <label for="durusAciklama">Açıklama (opsiyonel):</label>
+            <input type="text" id="durusAciklama" placeholder="Ek açıklama..." />
+        </div>
+        <div>
+            <label for="durusDakikasi">Duruş Süresi (dk):</label>
+            <input type="number" id="durusDakikasi" placeholder="dk" min="1" />
+        </div>
+    </div>
+
+    <button class="btn btn-warning" onclick="durusKaydi()">⏸️ Duruş Kaydı Yap</button>
+
+    <!-- KAYIT GEÇMİŞİ -->
+    <div class="section-title">📋 Kayıt Geçmişi</div>
+    <div class="history-area" id="historyArea">
+        <p class="empty-msg" id="emptyMsg">Henüz kayıt yapılmadı...</p>
+    </div>
+
+    <!-- VARDİYA KAPAT -->
+    <button class="btn btn-success" onclick="vardiyayiKapat()" style="margin-top:20px;">📥 Vardiyayı Kapat ve Raporu İndir</button>
+    <button class="btn btn-danger" onclick="vardiyayiIptalEt()" style="margin-top:8px;">🔙 Vardiyayı İptal Et (Giriş Ekranına Dön)</button>
+
+    <div class="footer">
+        <p>&copy; 2025 COŞKUNÖZ HOLDİNG - Tüm Hakları Saklıdır</p>
+    </div>
+</div>
+
+<script>
+    // ============================================================
+    //  DEĞİŞKENLER
+    // ============================================================
+    let baslangicSuresi = 0;
+    let calismaSure = 0;
+    let toplamUretimSuresi = 0;
+    let toplamDurusSuresi = 0;
+    let operatorAdi = "";
+    let vardiyaBaslangic = "";
+    let tumKayitlar = [];          // Rapor satırları
+    let kayitSayaci = 0;           // Her kayda benzersiz ID
+    let kayitObjeleri = [];        // Detaylı obje listesi (silme için)
+
+    // ============================================================
+    //  PARÇA VERİTABANI (localStorage)
+    // ============================================================
+    function parcalariYukle() {
+        try {
+            let veri = localStorage.getItem("coskunoz_parcalar");
+            return veri ? JSON.parse(veri) : [];
+        } catch (e) {
+            return [];
+        }
+    }
+
+    function parcalariKaydet(liste) {
+        localStorage.setItem("coskunoz_parcalar", JSON.stringify(liste));
+    }
+
+    function yeniParcaEkle() {
+        let ad = document.getElementById("yeniParcaAdi").value.trim();
+        let dk = parseFloat(document.getElementById("yeniParcaDakikasi").value);
+
+        if (!ad) { alert("Parça adı boş olamaz!"); return; }
+        if (!dk || dk <= 0) { alert("Geçerli bir parça dakikası girin!"); return; }
+
+        let liste = parcalariYukle();
+
+        // Aynı isim var mı kontrol et (büyük-küçük harf duyarsız)
+        let mevcut = liste.find(p => p.ad.toLowerCase() === ad.toLowerCase());
+        if (mevcut) {
+            if (confirm("Bu parça zaten mevcut. Dakikasını güncellemek ister misiniz?")) {
+                mevcut.dk = dk;
+            } else {
+                return;
+            }
+        } else {
+            liste.push({ ad: ad, dk: dk });
+        }
+
+        parcalariKaydet(liste);
+        parcaListesiniGoster();
+
+        document.getElementById("yeniParcaAdi").value = "";
+        document.getElementById("yeniParcaDakikasi").value = "";
+
+        alert("Parça başarıyla kaydedildi: " + ad + " (" + dk + " dk)");
+    }
+
+    function parcaSil(index) {
+        let liste = parcalariYukle();
+        let silinen = liste[index].ad;
+        if (confirm(silinen + " parçasını silmek istediğinize emin misiniz?")) {
+            liste.splice(index, 1);
+            parcalariKaydet(liste);
+            parcaListesiniGoster();
+        }
+    }
+
+    function parcaListesiniGoster() {
+        let liste = parcalariYukle();
+        let hedef = document.getElementById("parcaListesiGiris");
+        if (!hedef) return;
+
+        if (liste.length === 0) {
+            hedef.innerHTML = "<em style='color:#999;'>Henüz parça tanımlanmamış.</em>";
+            return;
+        }
+
+        let html = "";
+        liste.forEach(function(p, i) {
+            html += '<span class="parca-tag">'
+                  + escapeHtml(p.ad) + ' (' + p.dk + ' dk)'
+                  + '<span class="sil-btn" onclick="parcaSil(' + i + ')"> ✕</span>'
+                  + '</span>';
+        });
+        hedef.innerHTML = html;
+    }
+
+    // ============================================================
+    //  AUTOCOMPLETE (Parça arama)
+    // ============================================================
+    function autocompleteAra() {
+        let input = document.getElementById("parcaInput");
+        let list = document.getElementById("autocompleteList");
+        let aranan = input.value.trim().toLowerCase();
+        let parcalar = parcalariYukle();
+
+        if (aranan.length === 0 && document.activeElement === input) {
+            // Tüm parçaları göster
+            autocompleteListeGoster(parcalar);
+            return;
+        }
+
+        let filtreli = parcalar.filter(function(p) {
+            return p.ad.toLowerCase().indexOf(aranan) !== -1;
+        });
+
+        if (filtreli.length > 0 && aranan.length > 0) {
+            autocompleteListeGoster(filtreli);
+        } else {
+            list.style.display = "none";
+        }
+    }
+
+    function autocompleteListeGoster(parcalar) {
+        let list = document.getElementById("autocompleteList");
+        list.innerHTML = "";
+
+        if (parcalar.length === 0) {
+            list.style.display = "none";
+            return;
+        }
+
+        parcalar.forEach(function(p) {
+            let item = document.createElement("div");
+            item.className = "autocomplete-item";
+            item.innerHTML = '<span>' + escapeHtml(p.ad) + '</span>'
+                           + '<span class="parca-dakika">' + p.dk + ' dk/adet</span>';
+            item.addEventListener("click", function() {
+                document.getElementById("parcaInput").value = p.ad;
+                document.getElementById("parcaDakikasi").value = p.dk;
+                list.style.display = "none";
+            });
+            list.appendChild(item);
+        });
+
+        list.style.display = "block";
+    }
+
+    // Dışarı tıklanınca autocomplete kapat
+    document.addEventListener("click", function(e) {
+        let wrapper = document.querySelector(".autocomplete-wrapper");
+        if (wrapper && !wrapper.contains(e.target)) {
+            document.getElementById("autocompleteList").style.display = "none";
+        }
+    });
+
+    // ============================================================
+    //  GİRİŞ YAP
+    // ============================================================
+    function girisYap() {
+        let sure = parseInt(document.getElementById("calismaSure").value);
+        let isim = document.getElementById("operatorAdi").value.trim();
+
+        if (!sure || sure <= 0) {
+            alert("Lütfen geçerli bir vardiya süresi girin!");
+            return;
+        }
+        if (!isim) {
+            alert("Lütfen operatör adınızı girin!");
+            return;
+        }
+
+        baslangicSuresi = sure;
+        calismaSure = sure;
+        operatorAdi = isim;
+        toplamUretimSuresi = 0;
+        toplamDurusSuresi = 0;
+        tumKayitlar = [];
+        kayitObjeleri = [];
+        kayitSayaci = 0;
+
+        let simdi = new Date();
+        vardiyaBaslangic = simdi.toLocaleDateString('tr-TR') + " " + simdi.toLocaleTimeString('tr-TR', { hour12: false });
+
+        guncelleDurum();
+
+        document.getElementById("operatorGoster").textContent = operatorAdi;
+        document.getElementById("historyArea").innerHTML = '<p class="empty-msg" id="emptyMsg">Henüz kayıt yapılmadı...</p>';
+        document.getElementById("loginContainer").style.display = "none";
+        document.getElementById("mainContainer").style.display = "block";
+    }
+
+    // ============================================================
+    //  ÜRETİM KAYDI
+    // ============================================================
+    function calismaKaydi() {
+        let parca = document.getElementById("parcaInput").value.trim();
+        let parcaAdedi = parseInt(document.getElementById("parcaAdedi").value);
+        let parcaDakikasi = parseFloat(document.getElementById("parcaDakikasi").value);
+
+        if (!parca) { alert("Parça adı boş olamaz!"); return; }
+        if (!parcaAdedi || parcaAdedi <= 0) { alert("Geçerli bir parça adedi girin!"); return; }
+        if (!parcaDakikasi || parcaDakikasi <= 0) { alert("Geçerli bir parça dakikası girin!"); return; }
+
+        let toplamDakika = parcaAdedi * parcaDakikasi;
+        toplamDakika = Math.round(toplamDakika * 100) / 100; // Yuvarlama
+
+        if (toplamDakika > calismaSure) {
+            alert("⚠️ Yeterli süre yok!\n\nGerekli: " + toplamDakika + " dk\nKalan: " + calismaSure + " dk");
+            return;
+        }
+
+        calismaSure -= toplamDakika;
+        calismaSure = Math.round(calismaSure * 100) / 100;
+        toplamUretimSuresi += toplamDakika;
+        toplamUretimSuresi = Math.round(toplamUretimSuresi * 100) / 100;
+
+        guncelleDurum();
+
+        // Parçayı otomatik olarak veritabanına ekle (yoksa)
+        let liste = parcalariYukle();
+        let mevcut = liste.find(function(p) { return p.ad.toLowerCase() === parca.toLowerCase(); });
+        if (!mevcut) {
+            liste.push({ ad: parca, dk: parcaDakikasi });
+            parcalariKaydet(liste);
+            parcaListesiniGoster();
+        }
+
+        let zaman = new Date().toLocaleTimeString('tr-TR', { hour12: false });
+        kayitSayaci++;
+        let id = kayitSayaci;
+
+        let kayitMetni = "[" + zaman + "] ÜRETİM | Parça: " + parca
+                       + " | Adet: " + parcaAdedi
+                       + " | Birim dk: " + parcaDakikasi
+                       + " | Toplam: " + toplamDakika + " dk";
+
+        let obj = {
+            id: id,
+            tip: "uretim",
+            zaman: zaman,
+            metin: kayitMetni,
+            parca: parca,
+            adet: parcaAdedi,
+            birimDk: parcaDakikasi,
+            toplamDk: toplamDakika
+        };
+
+        kayitObjeleri.push(obj);
+        tumKayitlar.push(kayitMetni);
+        ekranaKayitEkle(obj);
+
+        document.getElementById("parcaInput").value = "";
+        document.getElementById("parcaAdedi").value = "";
+        document.getElementById("parcaDakikasi").value = "";
+        document.getElementById("parcaInput").focus();
+    }
+
+    // ============================================================
+    //  DURUŞ KAYDI
+    // ============================================================
+    function durusKaydi() {
+        let durusSebebi = document.getElementById("durusSebebi").value;
+        let durusAciklama = document.getElementById("durusAciklama").value.trim();
+        let durusDakikasi = parseInt(document.getElementById("durusDakikasi").value);
+
+        if (!durusSebebi) { alert("Lütfen bir duruş sebebi seçin!"); return; }
+        if (!durusDakikasi || durusDakikasi <= 0) { alert("Geçerli bir duruş süresi girin!"); return; }
+
+        calismaSure += durusDakikasi;
+        toplamDurusSuresi += durusDakikasi;
+
+        guncelleDurum();
+
+        let zaman = new Date().toLocaleTimeString('tr-TR', { hour12: false });
+        kayitSayaci++;
+        let id = kayitSayaci;
+
+        let sebebTam = durusSebebi;
+        if (durusAciklama) { sebebTam += " - " + durusAciklama; }
+
+        let kayitMetni = "[" + zaman + "] DURUŞ | Sebep: " + sebebTam
+                       + " | Süre: " + durusDakikasi + " dk";
+
+        let obj = {
+            id: id,
+            tip: "durus",
+            zaman: zaman,
+            metin: kayitMetni,
+            sebep: sebebTam,
+            dk: durusDakikasi
+        };
+
+        kayitObjeleri.push(obj);
+        tumKayitlar.push(kayitMetni);
+        ekranaKayitEkle(obj);
+
+        document.getElementById("durusSebebi").value = "";
+        document.getElementById("durusAciklama").value = "";
+        document.getElementById("durusDakikasi").value = "";
+    }
+
+    // ============================================================
+    //  KAYIT SİLME
+    // ============================================================
+    function kayitSil(id) {
+        let index = kayitObjeleri.findIndex(function(k) { return k.id === id; });
+        if (index === -1) return;
+
+        let obj = kayitObjeleri[index];
+
+        if (!confirm("Bu kaydı silmek istediğinize emin misiniz?\n\n" + obj.metin)) return;
+
+        // Süreleri geri al
+        if (obj.tip === "uretim") {
+            calismaSure += obj.toplamDk;
+            calismaSure = Math.round(calismaSure * 100) / 100;
+            toplamUretimSuresi -= obj.toplamDk;
+            toplamUretimSuresi = Math.round(toplamUretimSuresi * 100) / 100;
+        } else if (obj.tip === "durus") {
+            calismaSure -= obj.dk;
+            toplamDurusSuresi -= obj.dk;
+        }
+
+        kayitObjeleri.splice(index, 1);
+        tumKayitlar.splice(index, 1);
+
+        guncelleDurum();
+        tumKayitlariYenidenCiz();
+    }
+
+    function tumKayitlariYenidenCiz() {
+        let historyArea = document.getElementById("historyArea");
+        historyArea.innerHTML = "";
+
+        if (kayitObjeleri.length === 0) {
+            historyArea.innerHTML = '<p class="empty-msg">Henüz kayıt yapılmadı...</p>';
+            return;
+        }
+
+        kayitObjeleri.forEach(function(obj) {
+            ekranaKayitEkle(obj);
+        });
+    }
+
+    // ============================================================
+    //  EKRANA KAYIT EKLEME
+    // ============================================================
+    function ekranaKayitEkle(obj) {
+        let historyArea = document.getElementById("historyArea");
+        let emptyMsg = document.getElementById("emptyMsg");
+        if (emptyMsg) emptyMsg.remove();
+
+        let div = document.createElement("div");
+        div.className = "history-item " + (obj.tip === "uretim" ? "hi-production" : "hi-downtime");
+        div.id = "kayit-" + obj.id;
+
+        let metinSpan = document.createElement("span");
+        metinSpan.textContent = obj.metin;
+
+        let silBtn = document.createElement("button");
+        silBtn.className = "btn btn-danger btn-small";
+        silBtn.textContent = "Sil";
+        silBtn.onclick = function() { kayitSil(obj.id); };
+
+        div.appendChild(metinSpan);
+        div.appendChild(silBtn);
+        historyArea.appendChild(div);
+
+        div.scrollIntoView({ behavior: "smooth", block: "end" });
+    }
+
+    // ============================================================
+    //  DURUM GÜNCELLE
+    // ============================================================
+    function guncelleDurum() {
+        document.getElementById("kalanSure").textContent = calismaSure;
+        document.getElementById("toplamUretimGoster").textContent = toplamUretimSuresi;
+        document.getElementById("toplamDurusGoster").textContent = toplamDurusSuresi;
+    }
+
+    // ============================================================
+    //  VARDİYAYI KAPAT (RAPOR İNDİR - TÜRKÇE KARAKTER DESTEKLİ)
+    // ============================================================
+    function vardiyayiKapat() {
+        if (kayitObjeleri.length === 0) {
+            alert("Hiç kayıt yok. Vardiya kapatılamaz.");
+            return;
+        }
+
+        if (!confirm("Vardiyayı kapatmak ve raporu indirmek istediğinize emin misiniz?")) return;
+
+        let simdi = new Date();
+        let tarih = simdi.toLocaleDateString('tr-TR');
+        let saat = simdi.toLocaleTimeString('tr-TR', { hour12: false });
+
+        // Rapor oluşturma
+        let r = "";
+        r += "╔══════════════════════════════════════════════════════════╗\n";
+        r += "║           COŞKUNÖZ HOLDİNG - VARDİYA RAPORU            ║\n";
+        r += "╚══════════════════════════════════════════════════════════╝\n\n";
+
+        r += "Operatör           : " + operatorAdi + "\n";
+        r += "Vardiya Başlangıcı : " + vardiyaBaslangic + "\n";
+        r += "Rapor Tarihi       : " + tarih + " " + saat + "\n\n";
+
+        r += "────────────────── ÖZET ──────────────────\n";
+        r += "Toplam Vardiya Süresi  : " + baslangicSuresi + " dk\n";
+        r += "Net Üretim Süresi      : " + toplamUretimSuresi + " dk\n";
+        r += "Toplam Duruş Süresi    : " + toplamDurusSuresi + " dk\n";
+        r += "Kalan Süre             : " + calismaSure + " dk\n";
+
+        let verimlilik = baslangicSuresi > 0
+            ? Math.round((toplamUretimSuresi / baslangicSuresi) * 100)
+            : 0;
+        r += "Verimlilik             : %" + verimlilik + "\n";
+
+        // Parça bazlı özet
+        r += "\n────────────── PARÇA BAZLI ÖZET ──────────────\n";
+
+        let parcaOzet = {};
+        kayitObjeleri.forEach(function(k) {
+            if (k.tip === "uretim") {
+                if (!parcaOzet[k.parca]) {
+                    parcaOzet[k.parca] = { toplamAdet: 0, toplamDk: 0, birimDk: k.birimDk };
+                }
+                parcaOzet[k.parca].toplamAdet += k.adet;
+                parcaOzet[k.parca].toplamDk += k.toplamDk;
+            }
+        });
+
+        let parcaKeys = Object.keys(parcaOzet);
+        if (parcaKeys.length > 0) {
+            parcaKeys.forEach(function(ad) {
+                let p = parcaOzet[ad];
+                r += "  • " + ad + "  →  " + p.toplamAdet + " adet"
+                   + " | " + p.toplamDk + " dk"
+                   + " | Birim: " + p.birimDk + " dk\n";
+            });
+        } else {
+            r += "  (Üretim kaydı yok)\n";
+        }
+
+        // Duruş özeti
+        r += "\n────────────── DURUŞ ÖZET ──────────────\n";
+        let durusOzet = {};
+        kayitObjeleri.forEach(function(k) {
+            if (k.tip === "durus") {
+                if (!durusOzet[k.sebep]) {
+                    durusOzet[k.sebep] = 0;
+                }
+                durusOzet[k.sebep] += k.dk;
+            }
+        });
+
+        let durusKeys = Object.keys(durusOzet);
+        if (durusKeys.length > 0) {
+            durusKeys.forEach(function(sebep) {
+                r += "  • " + sebep + "  →  " + durusOzet[sebep] + " dk\n";
+            });
+        } else {
+            r += "  (Duruş kaydı yok)\n";
+        }
+
+        // Detaylı kayıtlar
+        r += "\n────────────── DETAYLI KAYITLAR ──────────────\n";
+        tumKayitlar.forEach(function(kayit, i) {
+            r += (i + 1) + ". " + kayit + "\n";
+        });
+
+        r += "\n╔══════════════════════════════════════════════════════════╗\n";
+        r += "║      Rapor otomatik olarak oluşturulmuştur.             ║\n";
+        r += "║      COŞKUNÖZ HOLDİNG - Tüm Hakları Saklıdır.          ║\n";
+        r += "╚══════════════════════════════════════════════════════════╝\n";
+
+        // ★ TÜRKÇE KARAKTER DESTEĞİ: UTF-8 BOM ekleniyor ★
+        let BOM = "\uFEFF";
+        let blob = new Blob([BOM + r], { type: "text/plain;charset=utf-8" });
+
+        let a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+
+        let dosyaTarih = simdi.getFullYear() + "-"
+                       + String(simdi.getMonth() + 1).padStart(2, "0") + "-"
+                       + String(simdi.getDate()).padStart(2, "0");
+        a.download = "vardiya_raporu_" + dosyaTarih + ".txt";
+
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(a.href);
+
+        alert("Vardiya raporu başarıyla indirildi!\n\nDosya: vardiya_raporu_" + dosyaTarih + ".txt");
+
+        // Giriş ekranına dön
+        document.getElementById("mainContainer").style.display = "none";
+        document.getElementById("loginContainer").style.display = "block";
+        document.getElementById("calismaSure").value = "";
+        document.getElementById("operatorAdi").value = "";
+    }
+
+    // ============================================================
+    //  VARDİYAYI İPTAL ET
+    // ============================================================
+    function vardiyayiIptalEt() {
+        if (kayitObjeleri.length > 0) {
+            if (!confirm("⚠️ Kayıtlar silinecek! Emin misiniz?")) return;
+        }
+        document.getElementById("mainContainer").style.display = "none";
+        document.getElementById("loginContainer").style.display = "block";
+    }
+
+    // ============================================================
+    //  YARDIMCI: HTML ESCAPE (XSS koruması)
+    // ============================================================
+    function escapeHtml(text) {
+        let div = document.createElement("div");
+        div.appendChild(document.createTextNode(text));
+        return div.innerHTML;
+    }
+
+    // ============================================================
+    //  SAYFA YÜKLENME: Parça listesini göster
+    // ============================================================
+    window.addEventListener("load", function() {
+        parcaListesiniGoster();
+    });
+</script>
+
+</body>
+</html>
